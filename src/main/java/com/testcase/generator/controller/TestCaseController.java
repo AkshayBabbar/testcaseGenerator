@@ -2,12 +2,14 @@ package com.testcase.generator.controller;
 
 import com.testcase.generator.model.*;
 import com.testcase.generator.service.TestCaseGeneratorService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +20,19 @@ public class TestCaseController {
     
     @Autowired
     private TestCaseGeneratorService testCaseGeneratorService;
-    
+
     @PostMapping("/generate")
-    public ResponseEntity<TestCase> generateTestCase(@Valid @RequestBody UseCaseRequest request) {
+    public ResponseEntity<TestCase> generateTestCase(
+            @Valid @RequestBody UseCaseRequest request,
+            HttpServletRequest httpRequest) {
+
+        System.out.println("Method: " + httpRequest.getMethod());
+        System.out.println("URL: " + httpRequest.getRequestURL());
+        System.out.println("Headers: " + Collections.list(httpRequest.getHeaderNames()));
+
         TestCase testCase = testCaseGeneratorService.generateTestCase(request);
         return ResponseEntity.ok(testCase);
     }
-
-
     
     @GetMapping("/industries")
     public ResponseEntity<List<IndustryInfo>> getAvailableIndustries() {
